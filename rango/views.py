@@ -32,7 +32,7 @@ def show_category(request, category_name_slug):
 		context_dict['pages'] = None
 	return render(request, 'rango/category.html', context_dict)
 
-
+@login_required
 def add_category(request):
 	form = CategoryForm()
 
@@ -46,7 +46,7 @@ def add_category(request):
 			print(form.errors)
 	return render(request, 'rango/add_category.html', {'form': form})
 
-
+@login_required
 def add_page(request, category_name_slug):
 	try:
 		category = Category.objects.get(slug=category_name_slug)
@@ -105,10 +105,12 @@ def user_login(request):
 				login(request, user)
 				return HttpResponseRedirect(reverse('index'))
 			else:
-				print("Invalid login details: {0}, {1}".format(username, password))
-				return HttpResponse("Invalid login details supplied.")
+				return HttpResponse("Your Rango account is disabled.")
 		else:
-			return render(request, 'rango/login.html', {})
+			print("Invalid login details: {0}, {1}".format(username, password))
+			return HttpResponse("Invalid login details supplied.")
+	else:
+		return render(request, 'rango/login.html', {})
 
 
 @login_required
